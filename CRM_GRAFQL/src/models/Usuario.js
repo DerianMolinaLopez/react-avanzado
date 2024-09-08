@@ -22,8 +22,14 @@ const usuariosSchema =Schema({
     trim:true,
     required:true
   },
-
-},{createAt:true,updateAt:true})
+  createAt:{
+    type:Date,
+    default:Date.now()
+},
+updateAt:{
+    type:Date,
+}
+})
 
 const Usuario = moongose.model('Usuario',usuariosSchema)
 export default Usuario

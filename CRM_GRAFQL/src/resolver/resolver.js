@@ -3,6 +3,7 @@ import moongose from 'mongoose';
 import Usuario from "../models/Usuario.js"
 import generarToken from "../config/generateToken.js";
 import bcrypt from "bcrypt"
+import Producto from "../models/Producto.js";
 import jwt from 'jsonwebtoken';
 //resolvers
 export const resolvers = {
@@ -23,7 +24,24 @@ export const resolvers = {
         }catch(error){
           console.log(error)
         }
+      },
+      obtenerProductos: async()=>{
+        try{
+          const productos = await Producto.find()
+          return productos
+        }catch(error){
+          console.log(error)
       }
+    },
+    obtenerProducto : async(_,{id})=>{
+      console.log(id)
+      const prodcutoExist = await Producto.findById(id)
+      if(!prodcutoExist) throw new Error("El producto no existe")
+      return prodcutoExist
+    
+    },
+    
+
     },
     Mutation:{
       nuevoUsuario: async(_,{input}) => {
@@ -69,6 +87,30 @@ export const resolvers = {
           token
         }
       },
+      crearProducto: async(_,{input})=>{
+        console.log(input)
+        const {nombre} = input
+        const productoExist = await Producto.findOne({nombre})
+        if(productoExist){
+          throw new Error("El producto ya existe")
+        }
+        const nuevoProducto = new Producto(input)
+        await nuevoProducto.save()
+        
+        return nuevoProducto
+      },
+      actualizarProducto: async(_,{id,input})=>{
+        const prodcutExist = await Producto.findById(id)
+        if(!prodcutExist) throw new Error("El producto no existe")
+        const producto = await Producto.findByIdAndUpdate(id,input,{new:true})
+        return producto
+      },
+      eliminarProducto: async(_,{id})=>{
+        const productoExist = await Producto.findById(id)
+        if(!productoExist) throw new Error("El producto no existe")
+        await Producto.findByIdAndDelete(id)
+        return "Producto eliminado"
+      }
       
     }
 }
