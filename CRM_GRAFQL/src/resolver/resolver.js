@@ -6,7 +6,7 @@ import bcrypt from "bcrypt"
 import Producto from "../models/Producto.js";
 import jwt from 'jsonwebtoken';
 import Cliente from "../models/Clientes.js";
-import decodificarToken from "../utils/decodificarJWT.js";
+import Pedido from "../models/Pedido.js";
 //resolvers
 export const resolvers = {
     Query:{
@@ -42,9 +42,8 @@ export const resolvers = {
       return prodcutoExist
     
     },
-    obtenerClientes: async(_,{},{usuario})=>{
-      console.log(usuario)
-      const clientes = await Cliente.find({vendedor:usuario.id})
+    obtenerClientes: async(_,{})=>{
+      const clientes = await Cliente.find()
       return clientes
     },
     obtenerClientesByVendedor: async(_,{},{usuario})=>{
@@ -160,7 +159,30 @@ export const resolvers = {
         if(cliente.vendedor.toString() !== usuario.id) throw new Error("No tienes las credenciales para editar")
         await Cliente.findByIdAndDelete(id)
         return "Cliente eliminado"
-      } 
+      },
+      nuevoPedido: async(_,{input},context)=>{
+        const {usuario} = context
+        const {cliente,pedido} = input
+
+        const clienteexist = await Cliente.findById(cliente)
+        if(!clienteexist) throw new Error("El cliente no existe")
+        //verificar si el cliente es del vendedeor
+        if(clienteexist.vendedor.toString() !== usuario.id) throw new Error("No tienes las credenciales para editar")
+
+         //verifico el stock disponible por cada uno 
+        for(const pedidoaux of pedido ){
+          const pedidoBuscado = await Producto.findById(pedidoaux.id)
+          if(pedidoBuscado.existencia<pedidoaux.cantidad){
+            throw new Error(`El producto ${pedidoBuscado.nombre} excede la cantidad disponible`)
+          }
+        }
+          //asignar un vendedor al pedido
+           const pedidoNuevo = new Pedido({...input,vendedor:usuario.id})
+        //guardar todo en la base de datos
+        console.log(pedidoNuevo)
+        await pedidoNuevo.save()
+        return pedidoNuevo
+      }
       
     }
 }

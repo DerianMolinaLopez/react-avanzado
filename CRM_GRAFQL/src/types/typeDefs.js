@@ -37,6 +37,19 @@ const typeDefs = gql`
         email:String!
         password:String!
   }
+  type Pedido{
+    id:ID
+    pedido:[PedidoGrupo]
+    total:Float
+    cliente:Cliente
+    vendedor:Usuario
+    estado:EstadoPedido
+    fecha:String
+  }
+  type PedidoGrupo{
+    id:ID
+    cantidad:Int
+  }
   input ProductoInput{
     nombre:String!
     existencia:Int!
@@ -58,7 +71,22 @@ const typeDefs = gql`
     contacto:String!
     email:String!
   } 
-
+  enum EstadoPedido{
+    PENDIENTE
+    COMPLETADO
+    CANCELADO
+  }
+  
+  input PedidoProductoInput{
+    id:ID
+    cantidad:Int
+  }
+  input PedidoInput{
+    total:Float!
+    cliente:ID!
+    estado:EstadoPedido
+    pedido:[PedidoProductoInput]
+  }
   type Mutation {
     nuevoUsuario(input: UsuarioInput): Usuario
     autenticarUsuario(input:AutenticarInput): Token
@@ -68,6 +96,7 @@ const typeDefs = gql`
     crearCliente(input:ClienteInput):Cliente
     actualizarCliente(id:ID!,input:ClienteInput):Cliente
     eliminarCliente(id:ID!):String
+    nuevoPedido(input:PedidoInput):Pedido
   }
    type Query{
       obtenerUsuario(token:String!):Usuario
