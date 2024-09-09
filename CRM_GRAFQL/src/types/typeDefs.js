@@ -21,6 +21,16 @@ const typeDefs = gql`
   type Token{
     token:String
   }
+  type Cliente{
+    id:ID
+    nombre:String
+    apellido:String
+    empresa:String
+    contacto:String
+    email:String
+    creado:String
+    vendedor:ID
+  }
   input UsuarioInput{
         nombre:String!
         apellido:String!
@@ -40,6 +50,13 @@ const typeDefs = gql`
     nombre:String!
     existencia:Int!
     precio:Float!
+  }
+  input ClienteInput{
+    nombre:String!
+    apellido:String!
+    empresa:String!
+    contacto:String!
+    email:String!
   } 
 
   type Mutation {
@@ -48,11 +65,17 @@ const typeDefs = gql`
     crearProducto(input:ProductoInput): Producto
     actualizarProducto(id:String!,input:ActualizarProductoInput):Producto
     eliminarProducto(id:ID!):String
+    crearCliente(input:ClienteInput):Cliente
+    actualizarCliente(id:ID!,input:ClienteInput):Cliente
+    eliminarCliente(id:ID!):String
   }
    type Query{
       obtenerUsuario(token:String!):Usuario
       obtenerProductos:[Producto]
       obtenerProducto(id:ID!):Producto
+      obtenerClientes:[Cliente]
+      obtenerClientesByVendedor:[Cliente]
+      obtenerCliente(id:ID!):Cliente
        
    }
 `//-->cuidado con los corchetes, respetar la sintaxis de arreglo

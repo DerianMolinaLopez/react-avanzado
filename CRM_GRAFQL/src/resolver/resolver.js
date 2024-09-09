@@ -5,6 +5,8 @@ import generarToken from "../config/generateToken.js";
 import bcrypt from "bcrypt"
 import Producto from "../models/Producto.js";
 import jwt from 'jsonwebtoken';
+import Cliente from "../models/Clientes.js";
+import decodificarToken from "../utils/decodificarJWT.js";
 //resolvers
 export const resolvers = {
     Query:{
@@ -40,6 +42,22 @@ export const resolvers = {
       return prodcutoExist
     
     },
+    obtenerClientes: async(_,{},{usuario})=>{
+      console.log(usuario)
+      const clientes = await Cliente.find({vendedor:usuario.id})
+      return clientes
+    },
+    obtenerClientesByVendedor: async(_,{},{usuario})=>{
+      const clientes = await Cliente.find({vendedor:usuario.id})
+      return clientes
+    },
+    obtenerCliente: async(_,{id},)=>{
+      console.log(id)
+      const cliente = await Cliente.findById(id)
+      if(!cliente) throw new Error("El cliente no existe")
+        console.log(cliente)
+      return cliente
+    }
     
 
     },
@@ -110,7 +128,39 @@ export const resolvers = {
         if(!productoExist) throw new Error("El producto no existe")
         await Producto.findByIdAndDelete(id)
         return "Producto eliminado"
-      }
+      },
+      crearCliente: async(_,{input},context)=>{
+        const {email} = input
+        const {usuario} = context
+        const clienteExiste = await Cliente.findOne({email})
+        if(clienteExiste) throw new Error("El cliente ya esta registrado")
+          //asignamos el vendedor que esta contenido en el context
+        const cliente = new Cliente({...input,vendedor:usuario.id})
+           
+        await cliente.save()
+        return cliente
+      },
+      actualizarCliente: async(_,{id,input},context)=>{
+        //verificamos si su vendedor es quien esta esditando
+        const{email,...inputIgnorado} = input//ignoramos el objeto email apra evitar la duplicidad
+        const{usuario} = context
+        const cliente = await Cliente.findById(id)
+        if(!cliente) throw new Error("El cliente no existe")
+        if(cliente.vendedor.toString() !== usuario.id) throw new Error("No tienes las credenciales para editar")
+        const clienteUpdate = await Cliente.findByIdAndUpdate(id,inputIgnorado,{new:true})  
+        return clienteUpdate
+      },
+      eliminarCliente: async(_,{id},context)=>{
+
+        const {usuario} = context
+        console.log(id)
+        console.log(usuario)
+        const cliente = await Cliente.findById(id)
+        if(!cliente) throw new Error("El cliente no existe")
+        if(cliente.vendedor.toString() !== usuario.id) throw new Error("No tienes las credenciales para editar")
+        await Cliente.findByIdAndDelete(id)
+        return "Cliente eliminado"
+      } 
       
     }
 }
