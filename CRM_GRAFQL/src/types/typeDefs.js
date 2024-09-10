@@ -82,8 +82,8 @@ const typeDefs = gql`
     cantidad:Int
   }
   input PedidoInput{
-    total:Float!
-    cliente:ID!
+    total:Float
+    cliente:ID
     estado:EstadoPedido
     pedido:[PedidoProductoInput]
   }
@@ -97,6 +97,8 @@ const typeDefs = gql`
     actualizarCliente(id:ID!,input:ClienteInput):Cliente
     eliminarCliente(id:ID!):String
     nuevoPedido(input:PedidoInput):Pedido
+    actualizarPedido(id:ID!,input:PedidoInput):Pedido
+    eliminarPedido(id: ID!): String
   }
    type Query{
       obtenerUsuario(token:String!):Usuario
@@ -105,6 +107,12 @@ const typeDefs = gql`
       obtenerClientes:[Cliente]
       obtenerClientesByVendedor:[Cliente]
       obtenerCliente(id:ID!):Cliente
+      obtenerPedidos: [Pedido]
+      obtenerPedidosByVendedor:[Pedido]
+      obtenerPedidosByID(id:ID!):Pedido
+      obtenerPedidosByEstado(estado:EstadoPedido):[Pedido]
+      
+     
        
    }
 `//-->cuidado con los corchetes, respetar la sintaxis de arreglo
