@@ -76,7 +76,14 @@ const typeDefs = gql`
     COMPLETADO
     CANCELADO
   }
-  
+  type TopCliente{
+    total:Float
+    cliente:[Cliente]
+  }
+  type TopVendedor{
+    total:Float
+    vendedor:[Usuario]
+  }  
   input PedidoProductoInput{
     id:ID
     cantidad:Int
@@ -111,6 +118,9 @@ const typeDefs = gql`
       obtenerPedidosByVendedor:[Pedido]
       obtenerPedidosByID(id:ID!):Pedido
       obtenerPedidosByEstado(estado:EstadoPedido):[Pedido]
+      obtenerMejoresClientes:[TopCliente]
+      obtenerMejoresVendedores:[TopVendedor]
+      obtenerProductoByNombre(nombre:String!):[Producto]
       
      
        

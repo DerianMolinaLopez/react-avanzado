@@ -26,5 +26,6 @@ const ProductoSchema = Schema({
     
 })
 
+ProductoSchema.index({nombre:'text'})
 const Producto = moongose.model('Producto',ProductoSchema)
 export default Producto

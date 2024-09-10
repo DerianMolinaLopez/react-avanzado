@@ -80,7 +80,68 @@ export const resolvers = {
     obtenerPedidosByEstado: async (_, { estado }, { usuario }) => {
       const pedidos = await Pedido.find({ vendedor: usuario.id, estado });
       return pedidos;
-    }
+    },
+    obtenerMejoresClientes: async () => {
+      const clientes = await Pedido.aggregate([
+        { $match: { estado: "COMPLETADO" } },
+        {
+          $group: {
+            _id: "$cliente",
+            total: { $sum: "$total" }
+          }
+        },
+        {
+          $lookup: {
+            from: "clientes",
+            localField: "_id",
+            foreignField: "_id",
+            as: "cliente"
+          }
+        },
+        {
+          $sort: { total: -1 }
+        }
+      ]);
+      return clientes;
+    },
+    obtenerMejoresVendedores: async () => {
+      const vendedores = await Pedido.aggregate([
+        { $match: { estado: "COMPLETADO" } },
+        {
+          $group: {
+            _id: "$vendedor",
+            total: { $sum: "$total" }
+          }
+        },
+        {
+          $lookup: {
+            from: "usuarios",
+            localField: "_id",
+            foreignField: "_id",
+            as: "vendedor"
+          }
+        },
+        {
+          $sort: { total: -1 }
+        },
+        {
+          $limit: 3
+        }
+      ]);
+
+      return vendedores;
+    },
+    obtenerProductoByNombre: async (_, { nombre }) => {
+      // !hay error no regresa la lisat de prodcutos
+      try {
+        const producto = await Producto.findOne({ nombre: { $regex: nombre, $options: 'i' } });
+        if (!producto) throw new Error("El producto no existe");
+        console.log(producto);
+        return producto; // Devuelve el producto directamente
+      } catch (error) {
+        throw new Error(`Error al buscar el producto: ${error.message}`);
+      }
+    },
   },
   Mutation: {
     nuevoUsuario: async (_, { input }) => {
