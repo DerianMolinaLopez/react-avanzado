@@ -9,7 +9,7 @@ const ContenidoPrincipal = ({children}) => {
     return (
     <div className = "bg-gray-200 min-h-screen">
     <div className = "flex min-h-screen ">
-        {pathname ==="/login"|| pathname ==="/cuenta-nueva"?(
+        {pathname ==="/auth/login"|| pathname ==="/auth/register"?(
              <>
              {children}
              </>
