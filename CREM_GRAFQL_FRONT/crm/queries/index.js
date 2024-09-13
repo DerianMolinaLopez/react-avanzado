@@ -18,3 +18,29 @@ export const  nuevoUsuario = gql`
   }
 }
 `
+export const autenticarUsuario = gql`
+   mutation autenticarUsuario ($input:AutenticarInput){
+    autenticarUsuario(input:$input) {
+    token
+  }
+}
+`
+export const obtenerClientesUsuario = gql`
+ {
+  obtenerClientesByVendedor {
+  id
+  nombre
+  email
+  empresa
+ }
+ }
+` 
+export const obtenerUsuario = gql`
+  query ($token: String!) {
+  obtenerUsuario(token: $token) {
+    id
+    nombre
+    apellido
+  }
+}
+`;

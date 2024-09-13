@@ -13,7 +13,9 @@ const layout = ({children}) => {
      
         {children}
         </div>
-      <ToastContainer/>
+      <ToastContainer
+      duration={3000} 
+      />
     </div>
   )
 }

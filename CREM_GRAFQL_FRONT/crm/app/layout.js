@@ -31,6 +31,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+       
         <ApolloWrapper>
           <ContenidoPrincipal>{children}</ContenidoPrincipal>
         </ApolloWrapper>

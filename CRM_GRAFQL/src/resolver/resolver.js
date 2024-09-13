@@ -10,10 +10,11 @@ import Pedido from "../models/Pedido.js";
 //resolvers
 export const resolvers = {
   Query: {
-    obtenerUsuario: async (_, { token }) => {
+    obtenerUsuario: async (_, { token }, context) => {
       try {
-        const usuario = jwt.verify(token, process.env.SECRETA);
-        console.log();
+        console.log("usuario desde el endpoint", context);
+        const { usuario } = context;
+    
         if (typeof usuario === "object") {
           const { email } = usuario;
           const usuarioExist = await Usuario.findOne({ email }).select(
@@ -178,7 +179,7 @@ export const resolvers = {
         usuarioExist.password
       );
       if (!passwordCorrect) {
-        throw new Error("Password incorrecto");
+        throw new Error("Contraseña incorrecta");
       }
       //console.log(generarToken(usuarioExist.id,usuarioExist.email))
       const token = generarToken(usuarioExist.id, usuarioExist.email);

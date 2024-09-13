@@ -13,9 +13,15 @@ connectDB()
 const server = new ApolloServer({typeDefs
                                ,resolvers,
                                context:({req})=>{
+                               
                                 //la cadena de atorizacion es reservdado para procesar el token
-                                const token = req.headers['authorization'] || ""
+                                let token = req.headers['authorization'] || ""
+                               
                                 if(token!==""){
+                                    if(token.includes('Bearer')){
+                                    token = token.split(' ')[1]
+                                    }
+                                    console.log(token)
                                     const usuario = decodificarToken(token) 
                                     return {usuario}
                                 }

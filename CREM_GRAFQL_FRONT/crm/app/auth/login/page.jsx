@@ -3,8 +3,13 @@
 import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useMutation } from "@apollo/client";
+import { useRouter } from 'next/navigation'
+import { autenticarUsuario } from "@/queries";
+import Link from "next/link";
 const LoginPage = () => {
+  const router = useRouter()
+  const [login,error]= useMutation(autenticarUsuario)
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       email: "",
@@ -12,8 +17,25 @@ const LoginPage = () => {
     }
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try{
+      const {data:objToken} = await login(
+        {
+          variables:{
+            input:{
+              email:data.email,
+              password:data.password
+            }
+          }
+        }
+       )
+       console.log(objToken.autenticarUsuario.token);
+        localStorage.setItem("token",objToken.autenticarUsuario.token)  
+        router.push("/clientes")
+    }catch(error){
+      toast.error(error.message)
+    }
+   
   };
 
   const onError = (errors) => {
@@ -50,7 +72,7 @@ const LoginPage = () => {
           Iniciar Sesión
         </button>
         <p className="text-center mt-4">
-          ¿No tienes una cuenta? <a href="/cuenta-nueva" className="text-emerald-500">Regístrate</a>
+          ¿No tienes una cuenta? <Link href="/auth/register" className="text-emerald-600">Regístrate</Link>
         </p>
       </div>
     </form>

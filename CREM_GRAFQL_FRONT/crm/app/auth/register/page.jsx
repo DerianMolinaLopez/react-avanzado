@@ -2,12 +2,14 @@
 import { useForm } from "react-hook-form";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Link from "next/link";
 import { queryProductos ,nuevoUsuario} from "@/queries";
+import { useRouter } from 'next/navigation'//!-> tiene que ser si o si con el de navegacion de next
 import { useQuery,useMutation } from "@apollo/client";
 const Page = () => {//!error en 
-
-  const { data, loading, error } = useQuery(queryProductos);
-  const [nuevoUsuario] = useMutation(nuevoUsuario);
+  const router = useRouter()
+  //const { data, loading, error } = useQuery(queryProductos);
+  const [crearUsuario,data] = useMutation(nuevoUsuario);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -20,7 +22,7 @@ const Page = () => {//!error en
 
   const submit =async (data) => {
     try{
-      await nuevoUsuario({
+    const {data:usuarioCreado} =  await crearUsuario({
         variables:{
           input:{
             nombre:data.name,
@@ -30,8 +32,12 @@ const Page = () => {//!error en
           }
         }
       })
+      if(usuarioCreado) toast.success("Usuario creado, te enviaremos al login para que puedas iniciar");
+      setTimeout(() => {
+        router.push("/auth/login")
+      }, 1000);
     }catch(error){
-      console.log("error",error);
+      toast.error(error.message)
     }
   };
 
@@ -82,10 +88,10 @@ const Page = () => {//!error en
           type="submit"
           className="w-full bg-emerald-500 hover:bg-emerald-700 transition-colors duration-200 text-white rounded-lg p-2 mt-4"
         >
-          Iniciar Sesión
+          Crear cuenta
         </button>
         <p className="text-center mt-4">
-          ¿No tienes una cuenta? <a href="/cuenta-nueva" className="text-blue-500">Regístrate</a>
+          ¿No tienes una cuenta? <Link href="/auth/login" className="text-emerald-600">Inicia sesion</Link>
         </p>
       </div>
     </form>
