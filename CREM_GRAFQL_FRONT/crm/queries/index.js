@@ -44,3 +44,13 @@ export const obtenerUsuario = gql`
   }
 }
 `;
+
+export const nuevoCliente = gql`
+mutation crearCliente($input: ClienteInput){
+  crearCliente(input: $input) {
+    nombre
+    vendedor
+    
+  }
+}
+`

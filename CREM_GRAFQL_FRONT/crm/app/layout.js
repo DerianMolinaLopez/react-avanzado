@@ -36,6 +36,8 @@ export default function RootLayout({ children }) {
           <ContenidoPrincipal>{children}</ContenidoPrincipal>
         </ApolloWrapper>
       </body>
+
+
     </html>
   );
 }

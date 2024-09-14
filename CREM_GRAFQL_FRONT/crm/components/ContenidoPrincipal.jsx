@@ -4,8 +4,9 @@ import Sidebar from "./Sidebar";
 import { useQuery } from "@apollo/client";
 import { obtenerUsuario } from "@/queries";
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'
-
+import { useRouter } from 'next/navigation';
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const ContenidoPrincipal = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
@@ -14,25 +15,24 @@ const ContenidoPrincipal = ({ children }) => {
   useEffect(() => {
     // Obtener el token de localStorage solo en el lado del cliente
     const storedToken = localStorage.getItem("token");
-    console.log(storedToken)
+    console.log(storedToken);
     setToken(storedToken);
-  }, []);
 
-  //un efecto para verificar que si no hay algun token, qeu te regrese a la pagina de login
-   useEffect(() => { 
-    if(!token){
-      router.push('/auth/login')
+    // Verificar si el token no existe y redirigir a la página de login
+    if (!storedToken) {
+      router.push('/auth/login');
     }
-    },[])  
+  }, [router]);
 
   const { data, loading, error } = useQuery(obtenerUsuario, {
     variables: { token },
     skip: !token, // Saltar la consulta si no hay token
   });
-  const cerrarSesion = ()=>{
-    localStorage.removeItem('token')
-    router.push('/auth/login')
-  }
+
+  const cerrarSesion = () => {
+    localStorage.removeItem('token');
+    router.push('/auth/login');
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -54,8 +54,8 @@ const ContenidoPrincipal = ({ children }) => {
                     <div className="flex justify-between w-full mx-32">
                       <h3 className="font-semibold text-2xl">Hola - {data?.obtenerUsuario?.nombre}{' '}{data?.obtenerUsuario?.apellido}</h3>
                       <button 
-                      onClick={cerrarSesion}
-                      className="flex justify-center items-center text-white bg-red-600 p-1 rounded-lg">
+                        onClick={cerrarSesion}
+                        className="flex justify-center items-center text-white bg-red-600 p-1 rounded-lg">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -81,6 +81,18 @@ const ContenidoPrincipal = ({ children }) => {
           )}
         </div>
       </div>
+      <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+/>
     </>
   );
 };

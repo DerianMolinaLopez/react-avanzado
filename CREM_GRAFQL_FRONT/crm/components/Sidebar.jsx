@@ -10,7 +10,7 @@ const Sidebar = () => {
         <div>
             <p className="text-white text-4xl  font-black mb-10">CRM Cientes</p>
             <nav className = "flex flex-col text-white font-semibold text-xl gap-5">
-            <Link href="/clientes" className={` p-2 ${pathname==='/clientes'?"bg-blue-800":''} hover:bg-blue-400`}>CLientes</Link>
+            <Link href="/clientes" className={` p-2 ${pathname==='/clientes' || pathname==="/clientes/nuevos-clientes"?"bg-blue-800":''} hover:bg-blue-400`}>CLientes</Link>
             <Link href="/pedidos" className={` p-2 ${pathname=='/pedidos'?"bg-blue-800 ":''}`}>Pedidos</Link>
             <Link href="/productos" className={`p-2 ${pathname=='/productos'?"bg-blue-800 ":''}`}>Prodcutos</Link>
             </nav>
