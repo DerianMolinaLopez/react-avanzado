@@ -6,20 +6,7 @@ import { nuevoCliente } from "@/queries";
 import { useMutation } from "@apollo/client";
 import { obtenerClientesUsuario } from "@/queries";
 const NuevoClienteForm = () => {
-  const [crearCliente] = useMutation(nuevoCliente,{
-    //cuando se ejecute la mutacion actualzamos el cacheque tenemos para refrecar la lista de los clientes
-    //aunque la otras pestaña se actualiza si o si, lo hago para prevenir algun error que pueda surgir
-    update(cache, { data: { crearCliente } }) {
-      //obtenemos el objeto de cache que queremos actualizar
-      const {obtenerClientesVendedor} = cache.readQuery({ query: obtenerClientesUsuario });
-      cache.writeQuery({
-        query: obtenerClientesUsuario,
-        data: {
-          obtenerClientesVendedor: [...obtenerClientesVendedor, crearCliente]
-        }
-      })
-    }
-  });
+  const [crearCliente] = useMutation(nuevoCliente);
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
       nombre: "",
@@ -63,9 +50,11 @@ const NuevoClienteForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)}
+    <>
+     
+     <form onSubmit={handleSubmit(onSubmit, onError)}
       className="w-96 bg-white rounded-lg shadow-xl p-8 mt-20">
-      <h2 className="text-3xl font-semibold text-center">Nuevo Cliente</h2>
+    
       <input
         {...register("nombre", { required: "El nombre es obligatorio" })}
         type="text"
@@ -103,6 +92,8 @@ const NuevoClienteForm = () => {
         Crear nuevo cliente
       </button>
     </form>
+    </>
+   
   );
 };
 

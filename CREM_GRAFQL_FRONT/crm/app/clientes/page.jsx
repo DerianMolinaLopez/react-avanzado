@@ -6,7 +6,7 @@ import Link from "next/link"
 import Tabla from "@/components/Tabla"
 const ClientesPage = () => {
     const {data} = useQuery(obtenerClientesUsuario)
-    console.log(data)
+   
   return (
     <div>
       <h2 className ="font-black text-5xl mb-10">Clientes</h2>

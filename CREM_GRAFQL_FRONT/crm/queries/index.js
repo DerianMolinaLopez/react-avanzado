@@ -1,4 +1,5 @@
 import {gql} from "@apollo/client";
+
 export const  queryProductos = gql`
     {
     obtenerProductos {
@@ -56,7 +57,26 @@ mutation crearCliente($input: ClienteInput){
 `
 
 export const eliminarCliente = gql`
-  mutation eliminacionCliente($eliminarClienteId: ID!) {
-    eliminarCliente(id: $eliminarClienteId)
+  mutation eliminarCliente ($id:ID!){
+  eliminarCliente(id: $id)
   }
 `;
+
+export const confirmarPassword = gql`
+  mutation confirmarPassword($password: String!){
+  confirmarPassword(password: $password)
+}
+`
+export const obtenerClienteById = gql`
+query ($obtenerClienteId: ID!) {
+  obtenerCliente(id: $obtenerClienteId) {
+    nombre
+    apellido
+    email
+    empresa
+    contacto
+    vendedor
+  }
+}
+
+`

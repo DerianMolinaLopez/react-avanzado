@@ -106,6 +106,7 @@ const typeDefs = gql`
     nuevoPedido(input:PedidoInput):Pedido
     actualizarPedido(id:ID!,input:PedidoInput):Pedido
     eliminarPedido(id: ID!): String
+    confirmarPassword(password:String!):String
   }
    type Query{
       obtenerUsuario(token:String!):Usuario

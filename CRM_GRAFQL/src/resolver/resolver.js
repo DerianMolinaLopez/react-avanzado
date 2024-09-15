@@ -239,15 +239,19 @@ export const resolvers = {
       return clienteUpdate;
     },
     eliminarCliente: async (_, { id }, context) => {
+    try{
       const { usuario } = context;
-      console.log(id);
-      console.log(usuario);
+      console.log("DESDE LA ELIMINACION DEL CLIENTE")
       const cliente = await Cliente.findById(id);
       if (!cliente) throw new Error("El cliente no existe");
       if (cliente.vendedor.toString() !== usuario.id)
         throw new Error("No tienes las credenciales para editar");
       await Cliente.findByIdAndDelete(id);
       return "Cliente eliminado";
+    }catch(error){
+      console.log(error)
+    }
+      
     },
     nuevoPedido: async (_, { input }, context) => {
       const { usuario } = context;
@@ -327,7 +331,17 @@ export const resolvers = {
     
       await Pedido.findByIdAndDelete(id);
       return "Pedido eliminado";
-    }
+    },
+    confirmarPassword: async (_, { password }, context) => {
+     const {usuario} = context
+     const usuarioCompleto = await Usuario.findById(usuario.id);
+     if(usuarioCompleto){
+       const passwordCorrect = await bcrypt.compare(password,usuarioCompleto.password);
+       if(!passwordCorrect) throw new Error("Contraseña incorrecta");
+       return "Contraseña correcta";
+     }
+    
+    },
    
   },
 };
