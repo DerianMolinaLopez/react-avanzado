@@ -54,3 +54,9 @@ mutation crearCliente($input: ClienteInput){
   }
 }
 `
+
+export const eliminarCliente = gql`
+  mutation eliminacionCliente($eliminarClienteId: ID!) {
+    eliminarCliente(id: $eliminarClienteId)
+  }
+`;
